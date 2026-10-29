@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧬 يلا نلم البايو كمستري 🎮</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #00f5ff;
+    --secondary: #7c3aed;
+    --accent: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --dark: #0a0a1a;
+    --card: #111130;
+    --card2: #1a1a3e;
+    --text: #e2e8f0;
+    --gold: #ffd700;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(0,245,255,0.1) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  /* ===== PARTICLES ===== */
+  #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: float linear infinite;
+    opacity: 0.4;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+  }
+
+  /* ===== INTRO SCREEN ===== */
+  #intro-screen {
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo-container {
+    margin-bottom: 30px;
+    animation: logoEntrance 1s ease-out;
+  }
+
+  @keyframes logoEntrance {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .logo-emoji {
+    font-size: 80px;
+    display: block;
+    animation: pulse 2s infinite;
+    filter: drop-shadow(0 0 20px rgba(0,245,255,0.6));
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .game-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+
+  .game-subtitle {
+    font-family: 'Cairo', sans-serif;
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    color: var(--primary);
+    margin-bottom: 20px;
+    opacity: 0.9;
+  }
+
+  .creator-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(0,245,255,0.2));
+    border: 1px solid rgba(0,245,255,0.3);
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 1rem;
+    margin-bottom: 25px;
+    backdrop-filter: blur(10px);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto 30px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid rgba(0,245,255,0.2);
+    border-radius: 15px;
+    padding: 15px 10px;
+    text-align: center;
+    transition: transform 0.3s;
+  }
+
+  .stat-card:hover { transform: translateY(-5px); }
+
+  .stat-icon { font-size: 2rem; display: block; margin-bottom: 5px; }
+  .stat-num { font-size: 1.5rem; font-weight: 700; color: var(--accent); font-family: 'Orbitron', monospace; }
+  .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); font-family: 'Cairo', sans-serif; }
+
+  .powers-info {
+    background: var(--card);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 20px;
+    padding: 20px;
+    max-width: 550px;
+    margin: 0 auto 25px;
+    text-align: right;
+  }
+
+  .powers-info h3 {
+    font-family: 'Cairo', sans-serif;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+  }
+
+  .power-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .power-cost { color: var(--accent); font-weight: 700; }
+
+  .btn-start {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    border: none;
+    border-radius: 50px;
+    padding: 18px 60px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 30px rgba(0,245,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: glow 2s infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,245,255,0.3); }
+    50% { box-shadow: 0 0 40px rgba(0,245,255,0.7), 0 0 60px rgba(124,58,237,0.5); }
+  }
+
+  .btn-start:hover { transform: scale(1.05); }
+
+  /* ===== SOCIAL BUTTONS ===== */
+  .social-section {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .social-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+
+  .tiktok-btn {
+    background: linear-gradient(135deg, #000000, #333333);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .facebook-btn {
+    background: linear-gradient(135deg, #1877f2, #42a5f5);
+    color: white;
+  }
+
+  .social-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+  .social-btn.done { opacity: 0.5; cursor: default; }
+
+  /* ===== GAME SCREEN ===== */
+  #game-screen {
+    padding: 15px;
+    width: 100%;
+    max-width: 750px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    background: var(--card);
+    border-radius: 15px;
+    padding: 12px 18px;
+    border: 1px solid rgba(0,245,255,0.15);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .coin-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .coin-icon { font-size: 1.5rem; animation: spin 3s linear infinite; }
+  @keyframes spin { 0% { transform: rotateY(0); } 100% { transform: rotateY(360deg); } }
+
+  .progress-info {
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .progress-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .streak-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Progress Bar */
+  .progress-bar-container {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    height: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--secondary), var(--primary));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px var(--primary);
+  }
+
+  /* Lecture Badge */
+  .lecture-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(124,58,237,0.4), rgba(0,245,255,0.2));
+    border: 1px solid rgba(0,245,255,0.3);
+    border-radius: 50px;
+    padding: 5px 15px;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  /* Question Card */
+  .question-card {
+    background: var(--card);
+    border: 2px solid rgba(0,245,255,0.2);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.4s ease-out;
+  }
+
+  @keyframes slideIn {
+    0% { transform: translateX(-30px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  .question-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--secondary), var(--primary), var(--accent));
+  }
+
+  .question-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 8px;
+  }
+
+  .question-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .term-speaker {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 6px;
+    transition: transform 0.2s;
+    vertical-align: middle;
+    opacity: 0.7;
+  }
+
+  .term-speaker:hover { transform: scale(1.3); opacity: 1; }
+
+  .arabic-translation {
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-top: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    color: #c4b5fd;
+    direction: rtl;
+    text-align: right;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .hint-box {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--accent);
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Answer Options */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 480px) {
+    .options-grid { grid-template-columns: 1fr; }
+  }
+
+  .option-btn {
+    background: var(--card2);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+    position: relative;
+    overflow: hidden;
+    line-height: 1.4;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: rgba(0,245,255,0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,245,255,0.15);
+  }
+
+  .option-btn.selected-answer {
+    animation: answerFlash 0.3s ease;
+  }
+
+  @keyframes answerFlash {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+  }
+
+  .option-btn:disabled { cursor: default; }
+  .option-btn.eliminated {
+    opacity: 0.25;
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+
+  .option-letter {
+    display: inline-block;
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    border-radius: 6px;
+    text-align: center;
+    line-height: 24px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Power Buttons */
+  .powers-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+  }
+
+  .power-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1.5px solid;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 0.75rem;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    min-width: 70px;
+  }
+
+  .power-btn .power-icon { font-size: 1.4rem; }
+  .power-btn .power-name { color: white; }
+  .power-btn .power-price { font-family: 'Orbitron', monospace; font-size: 0.7rem; }
+
+  .power-btn:hover:not(:disabled) { transform: translateY(-3px); }
+  .power-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .power-btn.eliminate { border-color: var(--red); color: var(--red); }
+  .power-btn.eliminate:hover:not(:disabled) { background: rgba(239,68,68,0.15); box-shadow: 0 5px 15px rgba(239,68,68,0.3); }
+
+  .power-btn.change { border-color: #a78bfa; color: #a78bfa; }
+  .power-btn.change:hover:not(:disabled) { background: rgba(167,139,250,0.15); box-shadow: 0 5px 15px rgba(167,139,250,0.3); }
+
+  .power-btn.translate { border-color: var(--primary); color: var(--primary); }
+  .power-btn.translate:hover:not(:disabled) { background: rgba(0,245,255,0.1); box-shadow: 0 5px 15px rgba(0,245,255,0.2); }
+
+  .power-btn.hint { border-color: var(--accent); color: var(--accent); }
+  .power-btn.hint:hover:not(:disabled) { background: rgba(245,158,11,0.15); box-shadow: 0 5px 15px rgba(245,158,11,0.3); }
+
+  /* Notification Toast */
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: var(--card2);
+    border: 1px solid rgba(0,245,255,0.3);
+    border-radius: 50px;
+    padding: 12px 25px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    z-index: 9999;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+    max-width: 90vw;
+    text-align: center;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+  .toast.coin { border-color: var(--gold); color: var(--gold); }
+  .toast.streak { border-color: var(--accent); color: var(--accent); background: rgba(245,158,11,0.1); }
+
+  /* Bonus Animation */
+  .bonus-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 9998;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bonus-card {
+    background: linear-gradient(135deg, rgba(245,158,11,0.9), rgba(255,215,0,0.9));
+    border-radius: 25px;
+    padding: 30px 50px;
+    text-align: center;
+    color: #1a0a00;
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    transform: scale(0);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 50px rgba(255,215,0,0.6);
+  }
+
+  .bonus-card.show { transform: scale(1); }
+  .bonus-card .bonus-emoji { font-size: 3rem; display: block; margin-bottom: 10px; }
+  .bonus-card .bonus-title { font-size: 1.5rem; }
+  .bonus-card .bonus-sub { font-size: 0.9rem; margin-top: 5px; font-family: 'Cairo', sans-serif; }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall 2s ease-in forwards;
+    z-index: 9997;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotateZ(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; }
+  }
+
+  /* Results Screen */
+  #result-screen {
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  .result-emoji { font-size: 5rem; animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  .result-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 15px 0;
+  }
+
+  .score-circle {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: conic-gradient(var(--primary) 0%, var(--secondary) var(--score-deg), var(--card2) var(--score-deg));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+    position: relative;
+    box-shadow: 0 0 40px rgba(0,245,255,0.3);
+  }
+
+  .score-inner {
+    width: 130px; height: 130px;
+    background: var(--dark);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--primary);
+  }
+
+  .score-total { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+
+  .results-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .result-stat {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 15px 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .result-stat .rs-icon { font-size: 1.8rem; display: block; margin-bottom: 5px; }
+  .result-stat .rs-num { font-family: 'Orbitron', monospace; font-size: 1.3rem; font-weight: 700; }
+  .result-stat .rs-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); font-family: 'Cairo', sans-serif; }
+
+  .grade-message {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin: 15px 0;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    border: 1px solid rgba(0,245,255,0.15);
+  }
+
+  .btn-replay {
+    background: linear-gradient(135deg, var(--green), #059669);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 50px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 10px 5px;
+    box-shadow: 0 0 20px rgba(16,185,129,0.3);
+  }
+
+  .btn-replay:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(16,185,129,0.5); }
+
+  /* Floating coins animation */
+  .floating-coin {
+    position: fixed;
+    font-size: 1.5rem;
+    pointer-events: none;
+    z-index: 9996;
+    animation: floatUp 1s ease-out forwards;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+  }
+
+  /* Social section in game */
+  .in-game-social {
+    background: var(--card);
+    border: 1px solid rgba(0,245,255,0.15);
+    border-radius: 15px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .social-earn-text {
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+  }
+
+  .social-btns-mini {
+    display: flex;
+    gap: 8px;
+  }
+
+  .social-mini-btn {
+    padding: 6px 12px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    transition: all 0.3s;
+  }
+
+  .social-mini-btn.done { opacity: 0.4; cursor: default; }
+
+  /* Mobile Responsive */
+  @media (max-width: 600px) {
+    .game-header { padding: 10px 12px; }
+    .coin-display { font-size: 1.1rem; }
+    .question-text { font-size: 1rem; }
+    .option-btn { padding: 12px; font-size: 0.9rem; }
+    .powers-row { gap: 6px; }
+    .power-btn { min-width: 60px; padding: 8px 10px; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  }
+
+  /* Loading dots */
+  .loading { display: inline-flex; gap: 5px; }
+  .loading span {
+    width: 8px; height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: loadingDot 0.8s ease-in-out infinite;
+  }
+  .loading span:nth-child(2) { animation-delay: 0.15s; }
+  .loading span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes loadingDot {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.4); opacity: 1; }
+  }
+
+  /* Speaker tooltip */
+  .speaker-wrap { display: inline-block; position: relative; }
+  .speaker-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--card2);
+    border: 1px solid rgba(0,245,255,0.3);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .speaker-wrap:hover .speaker-tooltip { opacity: 1; }
+
+  /* Question card glow on answered */
+  .question-card.answered-correct { border-color: rgba(16,185,129,0.4); }
+  .question-card.answered-wrong { border-color: rgba(239,68,68,0.4); }
+</style>
+</head>
+<body>
+
+<!-- Particles Background -->
+<div id="particles"></div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- Bonus Overlay -->
+<div class="bonus-overlay" id="bonusOverlay" style="display:none">
+  <div class="bonus-card" id="bonusCard">
+    <span class="bonus-emoji">🔥</span>
+    <div class="bonus-title">STREAK BONUS!</div>
+    <div class="bonus-sub">6 صح ورا بعض! +5 كوين 🪙</div>
+  </div>
+</div>
+
+<!-- ==================== INTRO SCREEN ==================== -->
+<div class="screen active" id="intro-screen">
+  <div class="logo-container">
+    <span class="logo-emoji">🧬</span>
+  </div>
+
+  <div class="game-title">BioChem Quest</div>
+  <div class="game-subtitle">🎮 يلا نلم البايو كمستري</div>
+
+  <div class="creator-badge">
+    👨‍🎓 Mohamed Atef &nbsp;|&nbsp; طالب متحدي 💪
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-icon">❓</span>
+      <div class="stat-num">50</div>
+      <div class="stat-label">سؤال</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">🪙</span>
+      <div class="stat-num">50</div>
+      <div class="stat-label">كوين ابتدائي</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📚</span>
+      <div class="stat-num">5</div>
+      <div class="stat-label">محاضرات</div>
+    </div>
+  </div>
+
+  <div class="powers-info">
+    <h3>⚡ قوى اللعبة</h3>
+    <div class="power-item">
+      <span class="power-cost">-10 🪙</span>
+      <span>🗑️ حذف إجابة خاطئة</span>
+    </div>
+    <div class="power-item">
+      <span class="power-cost">-10 🪙</span>
+      <span>🔄 تبديل السؤال</span>
+    </div>
+    <div class="power-item">
+      <span class="power-cost">-5 🪙</span>
+      <span>🌐 ترجمة السؤال للعربي</span>
+    </div>
+    <div class="power-item">
+      <span class="power-cost">-5 🪙</span>
+      <span>💡 تلميح بسيط</span>
+    </div>
+    <div class="power-item">
+      <span class="power-cost">+15 🪙</span>
+      <span>📱 متابعة TikTok</span>
+    </div>
+    <div class="power-item">
+      <span class="power-cost">+15 🪙</span>
+      <span>👍 متابعة Facebook</span>
+    </div>
+    <div class="power-item">
+      <span class="power-cost">+5 🪙</span>
+      <span>🔥 6 إجابات صح ورا بعض</span>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startGame()">
+    🚀 ابدأ اللعبة
+  </button>
+
+  <div class="social-section">
+    <a class="social-btn tiktok-btn" href="https://www.tiktok.com/@mohmed..atef?_r=1&_t=ZS-94VB0Mwd47e" target="_blank" onclick="claimSocialCoins('tiktok-intro', 15, this)">
+      🎵 تابع TikTok &nbsp; <span style="color:var(--gold)">+15 🪙</span>
+    </a>
+    <a class="social-btn facebook-btn" href="https://www.facebook.com/share/1byb6SuvJF/" target="_blank" onclick="claimSocialCoins('fb-intro', 15, this)">
+      👍 تابع Facebook &nbsp; <span style="color:var(--gold)">+15 🪙</span>
+    </a>
+  </div>
+</div>
+
+<!-- ==================== GAME SCREEN ==================== -->
+<div class="screen" id="game-screen">
+
+  <!-- In-game social earn -->
+  <div class="in-game-social" id="inGameSocial">
+    <span class="social-earn-text">💰 اكسب كوينات إضافية:</span>
+    <div class="social-btns-mini">
+      <a class="social-mini-btn" id="tiktokMiniBtn" href="https://www.tiktok.com/@mohmed..atef?_r=1&_t=ZS-94VB0Mwd47e" target="_blank" onclick="claimSocialCoins('tiktok-game', 15, this)" style="background:linear-gradient(135deg,#000,#333);color:white">🎵 TikTok +15🪙</a>
+      <a class="social-mini-btn" id="fbMiniBtn" href="https://www.facebook.com/share/1byb6SuvJF/" target="_blank" onclick="claimSocialCoins('fb-game', 15, this)" style="background:linear-gradient(135deg,#1877f2,#42a5f5);color:white">👍 Facebook +15🪙</a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="game-header">
+    <div class="coin-display">
+      <span class="coin-icon">🪙</span>
+      <span id="coinCount">50</span>
+    </div>
+    <div class="progress-info">
+      <div class="progress-num" id="questionCounter">1 / 50</div>
+      <div style="font-size:0.75rem; opacity:0.5">السؤال</div>
+    </div>
+    <div class="streak-display">
+      🔥 <span id="streakCount">0</span>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar" style="width:2%"></div>
+  </div>
+
+  <!-- Lecture Badge -->
+  <div id="lectureBadge" class="lecture-badge">📖 Lecture 1: Intro to Biochemistry</div>
+
+  <!-- Question Card -->
+  <div class="question-card" id="questionCard">
+    <div class="question-number" id="qNumber">Question #1</div>
+    <div class="question-text" id="questionText">Loading...</div>
+    <div class="arabic-translation" id="arabicTranslation"></div>
+    <div class="hint-box" id="hintBox">💡 <span id="hintText"></span></div>
+  </div>
+
+  <!-- Options -->
+  <div class="options-grid" id="optionsGrid"></div>
+
+  <!-- Power Buttons -->
+  <div class="powers-row">
+    <button class="power-btn eliminate" id="btnEliminate" onclick="useEliminate()">
+      <span class="power-icon">🗑️</span>
+      <span class="power-name">حذف</span>
+      <span class="power-price" style="color:var(--red)">-10🪙</span>
+    </button>
+    <button class="power-btn change" id="btnChange" onclick="useChange()">
+      <span class="power-icon">🔄</span>
+      <span class="power-name">تبديل</span>
+      <span class="power-price" style="color:#a78bfa">-10🪙</span>
+    </button>
+    <button class="power-btn translate" id="btnTranslate" onclick="useTranslate()">
+      <span class="power-icon">🌐</span>
+      <span class="power-name">ترجمة</span>
+      <span class="power-price" style="color:var(--primary)">-5🪙</span>
+    </button>
+    <button class="power-btn hint" id="btnHint" onclick="useHint()">
+      <span class="power-icon">💡</span>
+      <span class="power-name">تلميح</span>
+      <span class="power-price" style="color:var(--accent)">-5🪙</span>
+    </button>
+  </div>
+
+  <!-- Score so far (hidden, revealed at end) -->
+  <div style="text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.25); font-family:'Cairo',sans-serif">
+    👨‍🎓 Mohamed Atef | BioChem Quest 🧬
+  </div>
+
+</div>
+
+<!-- ==================== RESULT SCREEN ==================== -->
+<div class="screen" id="result-screen">
+  <div class="result-emoji" id="resultEmoji">🏆</div>
+  <div class="result-title" id="resultTitle">نتيجتك النهائية!</div>
+
+  <div class="score-circle" id="scoreCircle">
+    <div class="score-inner">
+      <div class="score-num" id="scoreNum">0</div>
+      <div class="score-total">من 50</div>
+    </div>
+  </div>
+
+  <div class="results-stats">
+    <div class="result-stat">
+      <span class="rs-icon">✅</span>
+      <div class="rs-num" id="correctCount" style="color:var(--green)">0</div>
+      <div class="rs-label">صح</div>
+    </div>
+    <div class="result-stat">
+      <span class="rs-icon">❌</span>
+      <div class="rs-num" id="wrongCount" style="color:var(--red)">0</div>
+      <div class="rs-label">غلط</div>
+    </div>
+    <div class="result-stat">
+      <span class="rs-icon">🪙</span>
+      <div class="rs-num" id="finalCoins" style="color:var(--gold)">0</div>
+      <div class="rs-label">كوين</div>
+    </div>
+  </div>
+
+  <div class="grade-message" id="gradeMessage"></div>
+
+  <button class="btn-replay" onclick="restartGame()">
+    🔄 العب مرة تانية
+  </button>
+
+  <div style="margin-top:15px; font-size:0.85rem; color:rgba(255,255,255,0.4); font-family:'Cairo',sans-serif">
+    👨‍🎓 Mohamed Atef | يلا نلم البايو كمستري 🧬
+  </div>
+</div>
+
+<script>
+// ===================================================
+// GAME DATA
+// ===================================================
+
+const QUESTIONS = [
+  // === LECTURE 1: Introduction to Biochemistry ===
+  {
+    id: 1, lecture: 1,
+    q: "🧬 What does the Greek word 'Bios' in Biochemistry mean?",
+    q_ar: "ماذا تعني كلمة 'Bios' اليونانية في الكيمياء الحيوية؟",
+    options: ["A) Chemistry", "B) Life", "C) Cell", "D) Molecule"],
+    correct: 1,
+    hint: "Think about 'bio' in biology...",
+    hint_ar: "فكر في معنى 'bio' في البيولوجيا...",
+    term: "Biochemistry"
+  },
+  {
+    id: 2, lecture: 1,
+    q: "🔬 Biochemistry is a special branch of which field of chemistry?",
+    q_ar: "الكيمياء الحيوية هي فرع خاص من أي مجال في الكيمياء؟",
+    options: ["A) Inorganic chemistry", "B) Organic chemistry", "C) Physical chemistry", "D) Nuclear chemistry"],
+    correct: 1,
+    hint: "It deals with carbon-containing molecules...",
+    hint_ar: "تتعامل مع الجزيئات التي تحتوي على الكربون...",
+    term: "Organic chemistry"
+  },
+  {
+    id: 3, lecture: 1,
+    q: "🧫 What is 'Protoplasm'?",
+    q_ar: "ما هو 'البروتوبلازم'؟",
+    options: ["A) The cell nucleus", "B) The cell membrane", "C) Complex mixture of organic compounds inside the living cell", "D) DNA molecule"],
+    correct: 2,
+    hint: "It's the entire 'living matter' inside a cell...",
+    hint_ar: "هو 'المادة الحية' بالكامل داخل الخلية...",
+    term: "Protoplasm"
+  },
+  {
+    id: 4, lecture: 1,
+    q: "⚗️ What is the ratio of Carbon:Hydrogen:Oxygen in carbohydrates?",
+    q_ar: "ما هي نسبة الكربون:الهيدروجين:الأكسجين في الكربوهيدرات؟",
+    options: ["A) 1:1:2", "B) 2:1:1", "C) 1:2:1", "D) 1:1:1"],
+    correct: 2,
+    hint: "The formula is (CH₂O)n ...",
+    hint_ar: "الصيغة هي (CH₂O)n ...",
+    term: "Carbohydrates"
+  },
+  {
+    id: 5, lecture: 1,
+    q: "🔗 What are the building blocks (monomers) of proteins?",
+    q_ar: "ما هي وحدات البناء (المونومرات) للبروتينات؟",
+    options: ["A) Nucleotides", "B) Fatty acids", "C) Glucose units", "D) Amino acids"],
+    correct: 3,
+    hint: "They are linked by peptide bonds...",
+    hint_ar: "ترتبط بروابط ببتيدية...",
+    term: "Amino acids"
+  },
+  {
+    id: 6, lecture: 1,
+    q: "⚡ Which metabolic pathway BUILDS larger molecules from smaller ones using ATP?",
+    q_ar: "أي مسار أيضي يبني جزيئات أكبر من جزيئات أصغر باستخدام ATP؟",
+    options: ["A) Catabolism", "B) Anabolism", "C) Glycolysis", "D) Hydrolysis"],
+    correct: 1,
+    hint: "ANA-bolism = building UP...",
+    hint_ar: "الابتناء = البناء...",
+    term: "Anabolism"
+  },
+  {
+    id: 7, lecture: 1,
+    q: "💥 Which metabolic process BREAKS DOWN large molecules to RELEASE energy?",
+    q_ar: "أي عملية أيضية تكسر الجزيئات الكبيرة لإطلاق الطاقة؟",
+    options: ["A) Anabolism", "B) Polymerization", "C) Catabolism", "D) Condensation"],
+    correct: 2,
+    hint: "CATA = breaking DOWN...",
+    hint_ar: "الهدم = الكسر...",
+    term: "Catabolism"
+  },
+  {
+    id: 8, lecture: 1,
+    q: "💪 Which type of chemical bond is the STRONGEST?",
+    q_ar: "أي نوع من الروابط الكيميائية هو الأقوى؟",
+    options: ["A) Hydrogen bond", "B) Van der Waals force", "C) Ionic bond", "D) Covalent bond"],
+    correct: 3,
+    hint: "It involves mutual SHARING of electrons...",
+    hint_ar: "تتضمن المشاركة المتبادلة للإلكترونات...",
+    term: "Covalent bond"
+  },
+  {
+    id: 9, lecture: 1,
+    q: "⚡ What type of bond involves ELECTRON TRANSFER between a metal and non-metal?",
+    q_ar: "ما نوع الرابطة التي تتضمن نقل الإلكترونات بين معدن وغير معدن؟",
+    options: ["A) Covalent bond", "B) Hydrogen bond", "C) Ionic bond", "D) Hydrophobic interaction"],
+    correct: 2,
+    hint: "It creates oppositely charged ions (cations & anions)...",
+    hint_ar: "تنتج أيونات مشحونة بشكل معاكس...",
+    term: "Ionic bond"
+  },
+  {
+    id: 10, lecture: 1,
+    q: "💧 What reaction ADDS water to break down a polymer into monomers?",
+    q_ar: "أي تفاعل يضيف الماء لتكسير البوليمر إلى مونومرات؟",
+    options: ["A) Condensation reaction", "B) Hydrolysis", "C) Oxidation", "D) Phosphorylation"],
+    correct: 1,
+    hint: "Hydro = water, lysis = breaking...",
+    hint_ar: "هيدرو = ماء، ليسيس = تكسير...",
+    term: "Hydrolysis"
+  },
+
+  // === LECTURE 2: Cell Structure & Function ===
+  {
+    id: 11, lecture: 2,
+    q: "🔬 What is the SMALLEST unit capable of performing all life functions?",
+    q_ar: "ما هي أصغر وحدة قادرة على أداء جميع وظائف الحياة؟",
+    options: ["A) Molecule", "B) Atom", "C) Cell", "D) Tissue"],
+    correct: 2,
+    hint: "It's the fundamental unit of life...",
+    hint_ar: "هي الوحدة الأساسية للحياة...",
+    term: "Cell"
+  },
+  {
+    id: 12, lecture: 2,
+    q: "🛡️ What is the OUTER BOUNDARY of the cell?",
+    q_ar: "ما هو الحد الخارجي للخلية؟",
+    options: ["A) Nucleus", "B) Cytoplasm", "C) Cell membrane", "D) Cell wall"],
+    correct: 2,
+    hint: "It surrounds the entire cell...",
+    hint_ar: "يحيط بالخلية بأكملها...",
+    term: "Cell membrane"
+  },
+  {
+    id: 13, lecture: 2,
+    q: "🧠 What organelle acts as the CONTROL CENTER of the cell?",
+    q_ar: "ما هي العضية التي تعمل كمركز التحكم في الخلية؟",
+    options: ["A) Mitochondria", "B) Ribosome", "C) Lysosome", "D) Nucleus"],
+    correct: 3,
+    hint: "Found only in eukaryotes, contains DNA...",
+    hint_ar: "توجد فقط في حقيقيات النوى، تحتوي على DNA...",
+    term: "Nucleus"
+  },
+  {
+    id: 14, lecture: 2,
+    q: "🌊 What is CYTOPLASM?",
+    q_ar: "ما هو السيتوبلازم؟",
+    options: ["A) The genetic material of the cell", "B) Material between the cell membrane and nucleus", "C) The outer layer of the cell", "D) The powerhouse of the cell"],
+    correct: 1,
+    hint: "It's the 'jelly-like' substance filling the cell...",
+    hint_ar: "هو المادة 'الهلامية' التي تملأ الخلية...",
+    term: "Cytoplasm"
+  },
+  {
+    id: 15, lecture: 2,
+    q: "🫧 The cell membrane is primarily formed of which molecule?",
+    q_ar: "تتكون غشاء الخلية أساساً من أي جزيء؟",
+    options: ["A) Protein bilayer", "B) Phospholipid bilayer", "C) Carbohydrate bilayer", "D) DNA double helix"],
+    correct: 1,
+    hint: "It's a double-layer of lipid molecules...",
+    hint_ar: "هو طبقة مزدوجة من الجزيئات الدهنية...",
+    term: "Phospholipids"
+  },
+  {
+    id: 16, lecture: 2,
+    q: "⚡ Which organelle is known as the 'POWERHOUSE' of the cell because it produces ATP?",
+    q_ar: "ما هي العضية المعروفة بـ'محطة توليد الطاقة' في الخلية لأنها تنتج ATP؟",
+    options: ["A) Ribosome", "B) Lysosome", "C) Mitochondria", "D) Endoplasmic reticulum"],
+    correct: 2,
+    hint: "ATP = energy currency of the cell...",
+    hint_ar: "ATP = عملة الطاقة للخلية...",
+    term: "Mitochondria"
+  },
+  {
+    id: 17, lecture: 2,
+    q: "🏭 Ribosomes are known as the 'PROTEIN FACTORIES'. What are they composed of?",
+    q_ar: "الريبوسومات معروفة بـ'مصانع البروتين'. مم تتكون؟",
+    options: ["A) DNA and lipids", "B) RNA and protein", "C) Carbohydrates only", "D) Phospholipids"],
+    correct: 1,
+    hint: "They use mRNA to synthesize proteins...",
+    hint_ar: "تستخدم mRNA لتصنيع البروتينات...",
+    term: "Ribosomes"
+  },
+  {
+    id: 18, lecture: 2,
+    q: "🧹 Which organelle is called the 'CLEANUP CREW' of the cell and contains digestive enzymes?",
+    q_ar: "أي عضية تُسمى 'طاقم التنظيف' في الخلية وتحتوي على إنزيمات هاضمة؟",
+    options: ["A) Mitochondria", "B) Endoplasmic reticulum", "C) Ribosome", "D) Lysosome"],
+    correct: 3,
+    hint: "If they rupture, they digest the cell itself...",
+    hint_ar: "إذا انفجرت، تهضم الخلية نفسها...",
+    term: "Lysosome"
+  },
+  {
+    id: 19, lecture: 2,
+    q: "🔧 What is the main function of the ROUGH Endoplasmic Reticulum (Rough ER)?",
+    q_ar: "ما هو الدور الرئيسي للشبكة الإندوبلازمية الخشنة (Rough ER)؟",
+    options: ["A) Phospholipid synthesis", "B) Energy production", "C) Protein synthesis (has ribosomes)", "D) DNA replication"],
+    correct: 2,
+    hint: "It's 'rough' because of attached ribosomes...",
+    hint_ar: "هي 'خشنة' بسبب الريبوسومات المرتبطة بها...",
+    term: "Rough Endoplasmic Reticulum"
+  },
+  {
+    id: 20, lecture: 2,
+    q: "🧬 What does the NUCLEUS contain that directs cell activities?",
+    q_ar: "ماذا يحتوي النواة الذي يوجه أنشطة الخلية؟",
+    options: ["A) ATP molecules", "B) Glycogen", "C) Genetic material (DNA)", "D) Phospholipids"],
+    correct: 2,
+    hint: "It's the blueprint/instruction manual of the cell...",
+    hint_ar: "هو المخطط/دليل التعليمات للخلية...",
+    term: "DNA"
+  },
+
+  // === LECTURE 3: Carbohydrate Chemistry ===
+  {
+    id: 21, lecture: 3,
+    q: "🍬 Which THREE elements are found in ALL carbohydrates?",
+    q_ar: "ما هي العناصر الثلاثة الموجودة في جميع الكربوهيدرات؟",
+    options: ["A) Carbon, Nitrogen, Hydrogen", "B) Carbon, Hydrogen, Oxygen", "C) Carbon, Sulfur, Oxygen", "D) Hydrogen, Oxygen, Nitrogen"],
+    correct: 1,
+    hint: "The general formula is (CH₂O)n ...",
+    hint_ar: "الصيغة العامة هي (CH₂O)n ...",
+    term: "Carbohydrates"
+  },
+  {
+    id: 22, lecture: 3,
+    q: "🍭 What is a MONOSACCHARIDE?",
+    q_ar: "ما هو السكر الأحادي (Monosaccharide)؟",
+    options: ["A) A chain of 7+ sugar units", "B) Two sugar units joined together", "C) A single sugar unit – the simplest carbohydrate", "D) 3 to 7 sugar units"],
+    correct: 2,
+    hint: "Mono = one, saccharide = sugar...",
+    hint_ar: "مونو = واحد، ساكاريد = سكر...",
+    term: "Monosaccharide"
+  },
+  {
+    id: 23, lecture: 3,
+    q: "🔢 Glucose is classified as a HEXOSE. What does this mean?",
+    q_ar: "يُصنَّف الجلوكوز على أنه سكر سداسي (Hexose). ماذا يعني هذا؟",
+    options: ["A) It has 5 carbon atoms", "B) It has 3 carbon atoms", "C) It has 6 carbon atoms", "D) It has 7 carbon atoms"],
+    correct: 2,
+    hint: "Hex = 6...",
+    hint_ar: "هيكس = 6...",
+    term: "Hexose"
+  },
+  {
+    id: 24, lecture: 3,
+    q: "🍚 What is SUCROSE (table sugar) made of?",
+    q_ar: "مم يتكون السكروز (سكر المائدة)؟",
+    options: ["A) Galactose + Glucose", "B) Glucose + Glucose", "C) Glucose + Fructose", "D) Fructose + Galactose"],
+    correct: 2,
+    hint: "It's a non-reducing disaccharide found in sugarcane...",
+    hint_ar: "هو ثنائي سكر غير مختزل موجود في قصب السكر...",
+    term: "Sucrose"
+  },
+  {
+    id: 25, lecture: 3,
+    q: "🥛 What is LACTOSE (milk sugar) composed of?",
+    q_ar: "مم يتكون اللاكتوز (سكر الحليب)؟",
+    options: ["A) Glucose + Fructose", "B) Galactose + Glucose", "C) Glucose + Glucose", "D) Fructose + Fructose"],
+    correct: 1,
+    hint: "Lacto = milk; found in dairy products...",
+    hint_ar: "لاكتو = حليب؛ موجود في منتجات الألبان...",
+    term: "Lactose"
+  },
+  {
+    id: 26, lecture: 3,
+    q: "🐾 What is GLYCOGEN?",
+    q_ar: "ما هو الجليكوجين؟",
+    options: ["A) Storage polysaccharide in plants", "B) Structural component of plant cell walls", "C) Storage polysaccharide in animals (liver & muscles)", "D) Simple sugar found in blood"],
+    correct: 2,
+    hint: "It's the animal equivalent of starch...",
+    hint_ar: "هو مكافئ النشا في الحيوانات...",
+    term: "Glycogen"
+  },
+  {
+    id: 27, lecture: 3,
+    q: "↔️ In the D-form of monosaccharides, where is the OH group on the last chiral carbon?",
+    q_ar: "في الشكل D للسكريات الأحادية، أين تكون مجموعة OH على آخر كربون كيرالي؟",
+    options: ["A) To the left", "B) At the top", "C) To the right", "D) At the bottom"],
+    correct: 2,
+    hint: "D = Dextro = right...",
+    hint_ar: "D = ديكسترو = يمين...",
+    term: "D-form"
+  },
+  {
+    id: 28, lecture: 3,
+    q: "💉 Which glycosaminoglycan acts as an ANTICOAGULANT?",
+    q_ar: "أي جليكوزامينوجليكان يعمل كمضاد للتخثر؟",
+    options: ["A) Hyaluronic acid", "B) Heparin", "C) Chondroitin sulfate", "D) Keratan sulfate"],
+    correct: 1,
+    hint: "Used to prevent blood clots...",
+    hint_ar: "يستخدم لمنع تجلط الدم...",
+    term: "Heparin"
+  },
+  {
+    id: 29, lecture: 3,
+    q: "👁️ Where is HYALURONIC ACID found in the body?",
+    q_ar: "أين يوجد حمض الهيالورونيك في الجسم؟",
+    options: ["A) Cornea and skin", "B) Joints and eye (vitreous humor)", "C) Cartilage only", "D) Blood plasma only"],
+    correct: 1,
+    hint: "It acts as a lubricant and shock absorber...",
+    hint_ar: "يعمل كمزلق وممتص للصدمات...",
+    term: "Hyaluronic acid"
+  },
+  {
+    id: 30, lecture: 3,
+    q: "🌾 What is the PRIMARY function of STARCH in plants?",
+    q_ar: "ما هي الوظيفة الأساسية للنشا في النباتات؟",
+    options: ["A) Structural support", "B) Energy storage", "C) Anticoagulation", "D) Cell recognition"],
+    correct: 1,
+    hint: "Similar to glycogen in animals – it stores energy...",
+    hint_ar: "مشابه للجليكوجين في الحيوانات - يخزن الطاقة...",
+    term: "Starch"
+  },
+
+  // === LECTURE 4: CHO Metabolism ===
+  {
+    id: 31, lecture: 4,
+    q: "📍 Where in the cell does GLYCOLYSIS take place?",
+    q_ar: "أين في الخلية تحدث عملية تحلل الجلوكوز (Glycolysis)؟",
+    options: ["A) Mitochondria", "B) Nucleus", "C) Cytosol of all cells", "D) Endoplasmic reticulum"],
+    correct: 2,
+    hint: "It occurs in ALL cell types, not just one...",
+    hint_ar: "تحدث في جميع أنواع الخلايا...",
+    term: "Glycolysis"
+  },
+  {
+    id: 32, lecture: 4,
+    q: "🔋 How many NET ATP molecules are produced in AEROBIC glycolysis?",
+    q_ar: "كم عدد جزيئات ATP الصافية المنتجة في تحلل الجلوكوز الهوائي؟",
+    options: ["A) 2 ATP", "B) 4 ATP", "C) 7 ATP", "D) 36 ATP"],
+    correct: 2,
+    hint: "9 are produced, but 2 are consumed = net...",
+    hint_ar: "ينتج 9، لكن 2 تُستهلك = الصافي...",
+    term: "Aerobic glycolysis"
+  },
+  {
+    id: 33, lecture: 4,
+    q: "⚡ How many NET ATP are produced under ANAEROBIC conditions in glycolysis?",
+    q_ar: "كم عدد ATP الصافية المنتجة في ظروف لاهوائية في تحلل الجلوكوز؟",
+    options: ["A) 2 ATP", "B) 7 ATP", "C) 9 ATP", "D) 38 ATP"],
+    correct: 0,
+    hint: "Anaerobic = no oxygen = less ATP...",
+    hint_ar: "لاهوائي = بدون أكسجين = ATP أقل...",
+    term: "Anaerobic glycolysis"
+  },
+  {
+    id: 34, lecture: 4,
+    q: "🏗️ What is GLYCOGENESIS?",
+    q_ar: "ما هو تخليق الجليكوجين (Glycogenesis)؟",
+    options: ["A) Breakdown of glycogen to release glucose", "B) Synthesis of glucose from non-carbohydrate sources", "C) Synthesis of glycogen from glucose for storage", "D) Conversion of glycogen to fat"],
+    correct: 2,
+    hint: "Genesis = creation/synthesis...",
+    hint_ar: "جينيسيس = تكوين/تخليق...",
+    term: "Glycogenesis"
+  },
+  {
+    id: 35, lecture: 4,
+    q: "💉 Which hormone ACTIVATES glycogenesis (promotes glycogen synthesis)?",
+    q_ar: "أي هرمون يُفعّل تخليق الجليكوجين (يعزز تكوين الجليكوجين)؟",
+    options: ["A) Glucagon", "B) Epinephrine", "C) Cortisol", "D) Insulin"],
+    correct: 3,
+    hint: "Secreted after a meal when blood glucose is high...",
+    hint_ar: "يُفرز بعد الوجبة عندما يكون سكر الدم مرتفعاً...",
+    term: "Insulin"
+  },
+  {
+    id: 36, lecture: 4,
+    q: "💔 What is GLYCOGENOLYSIS?",
+    q_ar: "ما هو تحلل الجليكوجين (Glycogenolysis)؟",
+    options: ["A) Synthesis of glycogen from glucose", "B) Breakdown of glycogen to release glucose", "C) Synthesis of glucose from amino acids", "D) Conversion of glucose to fat"],
+    correct: 1,
+    hint: "Lysis = breakdown; this is the REVERSE of glycogenesis...",
+    hint_ar: "ليسيس = تكسير؛ هذا عكس تخليق الجليكوجين...",
+    term: "Glycogenolysis"
+  },
+  {
+    id: 37, lecture: 4,
+    q: "🔄 What is GLUCONEOGENESIS?",
+    q_ar: "ما هي استحداث الجلوكوز (Gluconeogenesis)؟",
+    options: ["A) Synthesis of glycogen from glucose", "B) Breakdown of glucose to pyruvate", "C) Synthesis of glucose from NON-carbohydrate sources", "D) Conversion of fat to glycogen"],
+    correct: 2,
+    hint: "Neo = new; genesis = creation; making NEW glucose...",
+    hint_ar: "نيو = جديد؛ جينيسيس = تكوين؛ صنع جلوكوز جديد...",
+    term: "Gluconeogenesis"
+  },
+  {
+    id: 38, lecture: 4,
+    q: "🏥 Where does GLUCONEOGENESIS primarily occur?",
+    q_ar: "أين تحدث استحداث الجلوكوز بشكل رئيسي؟",
+    options: ["A) Cytosol of muscle cells", "B) Mitochondria of heart cells", "C) Cytosol of liver and kidney cells", "D) Nucleus of all cells"],
+    correct: 2,
+    hint: "Important in fasting to maintain blood glucose for brain & RBCs...",
+    hint_ar: "مهم في الصيام للحفاظ على سكر الدم للدماغ وكرات الدم الحمراء...",
+    term: "Gluconeogenesis"
+  },
+  {
+    id: 39, lecture: 4,
+    q: "🔁 What does the HMP SHUNT (Hexose Monophosphate Pathway) produce?",
+    q_ar: "ماذا ينتج مسار HMP (مسار أحادي فوسفات الهكسوز)؟",
+    options: ["A) ATP and CO₂", "B) Pyruvate and lactate", "C) Ribose-5-phosphate and NADPH", "D) Acetyl CoA and NADH"],
+    correct: 2,
+    hint: "Important for nucleotide synthesis and antioxidant defense...",
+    hint_ar: "مهم لتركيب النيوكليوتيدات والدفاع المضاد للأكسدة...",
+    term: "HMP Shunt"
+  },
+  {
+    id: 40, lecture: 4,
+    q: "💊 Which hormone STIMULATES glycogenolysis (glycogen breakdown)?",
+    q_ar: "أي هرمون يحفز تحلل الجليكوجين؟",
+    options: ["A) Insulin", "B) Thyroxine", "C) Aldosterone", "D) Epinephrine (Adrenaline)"],
+    correct: 3,
+    hint: "It's the 'fight or flight' hormone...",
+    hint_ar: "هو هرمون 'القتال أو الهروب'...",
+    term: "Epinephrine"
+  },
+
+  // === LECTURE 5: Diabetes Mellitus ===
+  {
+    id: 41, lecture: 5,
+    q: "📊 What is the NORMAL fasting plasma glucose level?",
+    q_ar: "ما هو مستوى جلوكوز البلازما الطبيعي للصائم؟",
+    options: ["A) 50–70 mg/dl", "B) 70–100 mg/dl", "C) 100–140 mg/dl", "D) 140–180 mg/dl"],
+    correct: 1,
+    hint: "Below this range = hypoglycemia; above = hyperglycemia...",
+    hint_ar: "أقل من هذا = نقص سكر؛ أعلى من هذا = ارتفاع سكر...",
+    term: "Fasting plasma glucose"
+  },
+  {
+    id: 42, lecture: 5,
+    q: "🏪 Which cells of the PANCREAS secrete INSULIN?",
+    q_ar: "أي خلايا البنكرياس تُفرز الأنسولين؟",
+    options: ["A) Alpha (α) cells", "B) Delta (δ) cells", "C) Beta (β) cells", "D) Gamma (γ) cells"],
+    correct: 2,
+    hint: "Alpha cells secrete GLUCAGON; Beta cells secrete INSULIN...",
+    hint_ar: "خلايا ألفا تُفرز الجلوكاجون؛ خلايا بيتا تُفرز الأنسولين...",
+    term: "Beta cells"
+  },
+  {
+    id: 43, lecture: 5,
+    q: "🧪 How many amino acids does INSULIN contain?",
+    q_ar: "كم عدد الأحماض الأمينية التي يحتوي عليها الأنسولين؟",
+    options: ["A) 21", "B) 30", "C) 51", "D) 100"],
+    correct: 2,
+    hint: "Insulin is a small protein hormone with two chains...",
+    hint_ar: "الأنسولين بروتين هرموني صغير يتكون من سلسلتين...",
+    term: "Insulin"
+  },
+  {
+    id: 44, lecture: 5,
+    q: "📉 What percentage of ALL diabetes cases is TYPE I (IDDM)?",
+    q_ar: "ما نسبة حالات السكري من النوع الأول (IDDM) من إجمالي حالات السكري؟",
+    options: ["A) 50%", "B) 30%", "C) 20%", "D) 10%"],
+    correct: 3,
+    hint: "Type II accounts for 90% of all cases...",
+    hint_ar: "النوع الثاني يمثل 90% من جميع الحالات...",
+    term: "Type I diabetes"
+  },
+  {
+    id: 45, lecture: 5,
+    q: "🚽 At what blood glucose level does GLUCOSURIA (glucose in urine) occur?",
+    q_ar: "عند أي مستوى من سكر الدم يحدث الجلوكوزيوريا (جلوكوز في البول)؟",
+    options: ["A) 100 mg/dl", "B) 140 mg/dl", "C) 180 mg/dl", "D) 200 mg/dl"],
+    correct: 2,
+    hint: "This is called the 'renal threshold for glucose'...",
+    hint_ar: "يُسمى هذا 'العتبة الكلوية للجلوكوز'...",
+    term: "Renal threshold"
+  },
+  {
+    id: 46, lecture: 5,
+    q: "🩸 What HbA1c level CONFIRMS a diagnosis of DIABETES MELLITUS?",
+    q_ar: "ما مستوى HbA1c الذي يؤكد تشخيص مرض السكري؟",
+    options: ["A) ≥ 4.5%", "B) ≥ 5.7%", "C) ≥ 6.5%", "D) ≥ 7.5%"],
+    correct: 2,
+    hint: "5.7–6.4% = prediabetic; ≥6.5% = diabetic...",
+    hint_ar: "5.7–6.4% = ما قبل السكري؛ ≥6.5% = سكري...",
+    term: "HbA1c"
+  },
+  {
+    id: 47, lecture: 5,
+    q: "🌊 Which THREE symptoms form the classic '3 P's' of diabetes?",
+    q_ar: "أي ثلاثة أعراض تشكل 'الثلاثة P' الكلاسيكية للسكري؟",
+    options: ["A) Pain, Pyrexia, Pallor", "B) Polyuria, Polydipsia, Polyphagia", "C) Polyuria, Purpura, Paralysis", "D) Palpitation, Perspiration, Polydipsia"],
+    correct: 1,
+    hint: "Excessive urination, thirst, and hunger...",
+    hint_ar: "كثرة التبول، العطش الشديد، والجوع المفرط...",
+    term: "3 P's of diabetes"
+  },
+  {
+    id: 48, lecture: 5,
+    q: "👁️ RETINOPATHY (eye damage in diabetes) is classified as which type of complication?",
+    q_ar: "اعتلال الشبكية (تلف العين في السكري) يُصنَّف كأي نوع من المضاعفات؟",
+    options: ["A) Macrovascular complication", "B) Microvascular complication", "C) Metabolic complication", "D) Infectious complication"],
+    correct: 1,
+    hint: "Micro = small blood vessels (retina, kidneys, nerves)...",
+    hint_ar: "ميكرو = الأوعية الدموية الصغيرة (شبكية، كلى، أعصاب)...",
+    term: "Retinopathy"
+  },
+  {
+    id: 49, lecture: 5,
+    q: "💊 How is TYPE II Diabetes Mellitus (NIDDM) primarily treated?",
+    q_ar: "كيف يُعالَج السكري من النوع الثاني (NIDDM) بشكل رئيسي؟",
+    options: ["A) Insulin injections only", "B) Surgery", "C) Diet control + Oral antidiabetic drugs", "D) No treatment needed"],
+    correct: 2,
+    hint: "Insulin is used for Type I; Type II may not need it initially...",
+    hint_ar: "الأنسولين للنوع الأول؛ النوع الثاني قد لا يحتاجه في البداية...",
+    term: "Type II treatment"
+  },
+  {
+    id: 50, lecture: 5,
+    q: "💧 In HYPERGLYCEMIC coma, what is the condition of the SKIN?",
+    q_ar: "في الغيبوبة السكرية (hyperglycemic coma)، ما هي حالة الجلد؟",
+    options: ["A) Excessive sweating (wet)", "B) Dry skin", "C) Red and flushed", "D) Cold and clammy"],
+    correct: 1,
+    hint: "Contrast with hypoglycemic coma where skin is sweaty...",
+    hint_ar: "عكس غيبوبة نقص السكر حيث يكون الجلد مبللاً بالعرق...",
+    term: "Hyperglycemic coma"
+  }
+];
+
+// Extra questions for "Change Question" power (NOT in main 50)
+const EXTRA_QUESTIONS = [
+  {
+    q: "🔬 What is van der Waals force?",
+    q_ar: "ما هو قوة فان دير فالس؟",
+    options: ["A) Strongest chemical bond", "B) Electron sharing bond", "C) Weakest transient electrostatic interaction", "D) Bond involving electron transfer"],
+    correct: 2,
+    hint: "It's the WEAKEST type of intermolecular force...",
+    term: "Van der Waals force",
+    lecture: 1
+  },
+  {
+    q: "🔄 What is a CONDENSATION REACTION in biochemistry?",
+    q_ar: "ما هو تفاعل التكثيف في الكيمياء الحيوية؟",
+    options: ["A) Adding water to break bonds", "B) Removing water to form new bonds between monomers", "C) Oxidizing glucose to CO₂", "D) Phosphorylating ADP to ATP"],
+    correct: 1,
+    hint: "Also called dehydration synthesis...",
+    term: "Condensation reaction",
+    lecture: 1
+  },
+  {
+    q: "🌱 What is the PRIMARY function of SMOOTH Endoplasmic Reticulum?",
+    q_ar: "ما هي الوظيفة الرئيسية للشبكة الإندوبلازمية الملساء؟",
+    options: ["A) Protein synthesis", "B) Phospholipid synthesis", "C) DNA replication", "D) ATP production"],
+    correct: 1,
+    hint: "It's 'smooth' because it lacks ribosomes...",
+    term: "Smooth ER",
+    lecture: 2
+  },
+  {
+    q: "🔵 What is a PYRANOSE ring in carbohydrate chemistry?",
+    q_ar: "ما هو حلقة البيرانوز في كيمياء الكربوهيدرات؟",
+    options: ["A) A 3-membered sugar ring", "B) A 5-membered sugar ring", "C) A 7-membered sugar ring", "D) A 6-membered sugar ring"],
+    correct: 3,
+    hint: "Named after pyran (6-membered ring compound)...",
+    term: "Pyranose",
+    lecture: 3
+  },
+  {
+    q: "🌾 MALTOSE is formed from the degradation of STARCH. What is it composed of?",
+    q_ar: "المالتوز يتكون من تحلل النشا. مم يتكون؟",
+    options: ["A) Glucose + Fructose", "B) Galactose + Glucose", "C) Glucose + Glucose", "D) Fructose + Galactose"],
+    correct: 2,
+    hint: "It's a disaccharide with two identical units...",
+    term: "Maltose",
+    lecture: 3
+  },
+  {
+    q: "🌿 CELLULOSE is a polysaccharide found in plant cell walls. What is its PRIMARY function?",
+    q_ar: "السيليلوز عديد سكر موجود في جدران خلايا النباتات. ما هي وظيفته الرئيسية؟",
+    options: ["A) Energy storage", "B) Structural support", "C) Anticoagulation", "D) Enzymatic catalysis"],
+    correct: 1,
+    hint: "It provides rigidity and structure to plants...",
+    term: "Cellulose",
+    lecture: 3
+  },
+  {
+    q: "🔴 Red Blood Cells (RBCs) ONLY use which metabolic pathway for energy?",
+    q_ar: "كرات الدم الحمراء تستخدم فقط أي مسار أيضي للطاقة؟",
+    options: ["A) Krebs cycle", "B) Beta oxidation", "C) Glycolysis (anaerobic)", "D) Oxidative phosphorylation"],
+    correct: 2,
+    hint: "RBCs have NO mitochondria...",
+    term: "Glycolysis",
+    lecture: 4
+  },
+  {
+    q: "🩺 INSULIN is secreted in response to what condition?",
+    q_ar: "الأنسولين يُفرز استجابةً لأي حالة؟",
+    options: ["A) Hypoglycemia", "B) Hyperglycemia", "C) Starvation", "D) Exercise"],
+    correct: 1,
+    hint: "High blood glucose triggers insulin release...",
+    term: "Insulin secretion",
+    lecture: 5
+  },
+  {
+    q: "🫀 CORONARY ARTERY DISEASE in diabetes is classified as which type of complication?",
+    q_ar: "مرض الشريان التاجي في السكري يُصنَّف كأي نوع من المضاعفات؟",
+    options: ["A) Microvascular", "B) Metabolic", "C) Macrovascular", "D) Infectious"],
+    correct: 2,
+    hint: "Macro = large blood vessels (heart, brain, peripheral)...",
+    term: "Macrovascular complication",
+    lecture: 5
+  },
+  {
+    q: "💪 Which hormone INHIBITS glycogenesis AND glycolysis?",
+    q_ar: "أي هرمون يثبط تخليق الجليكوجين وتحلل الجلوكوز؟",
+    options: ["A) Insulin", "B) Thyroxine", "C) Glucagon", "D) Growth hormone"],
+    correct: 2,
+    hint: "Secreted by alpha cells of pancreas; opposes insulin...",
+    term: "Glucagon",
+    lecture: 4
+  },
+  {
+    q: "🧬 What type of carbohydrate is RIBOSE, and where is it found?",
+    q_ar: "ما نوع الكربوهيدرات الريبوز، وأين يوجد؟",
+    options: ["A) Hexose, found in blood", "B) Triose, found in glycolysis", "C) Pentose, found in RNA", "D) Tetrose, found in cell walls"],
+    correct: 2,
+    hint: "Pent = 5 carbons; it's the sugar in RNA...",
+    term: "Ribose",
+    lecture: 3
+  },
+  {
+    q: "⚡ NADPH produced by HMP shunt is important for protecting RBCs from?",
+    q_ar: "NADPH المنتج من مسار HMP مهم للحماية من؟",
+    options: ["A) Bacterial infections", "B) Oxidative damage (H₂O₂)", "C) Hormone imbalance", "D) DNA mutations"],
+    correct: 1,
+    hint: "Deficiency causes 'Favism' – sensitivity to fava beans...",
+    term: "NADPH",
+    lecture: 4
+  },
+  {
+    q: "🔬 CHROMATIN in the nucleus is composed of?",
+    q_ar: "الكروماتين في النواة يتكون من؟",
+    options: ["A) RNA and lipids", "B) DNA associated with proteins called histones", "C) Carbohydrates and proteins", "D) ATP and enzymes"],
+    correct: 1,
+    hint: "During cell division, chromatin condenses into chromosomes...",
+    term: "Chromatin",
+    lecture: 2
+  },
+  {
+    q: "🍽️ What are the THREE non-carbohydrate sources used in GLUCONEOGENESIS?",
+    q_ar: "ما هي المصادر الثلاثة غير الكربوهيدراتية المستخدمة في استحداث الجلوكوز؟",
+    options: ["A) ATP, NADH, CO₂", "B) Lactate, glucogenic amino acids, glycerol", "C) Pyruvate, acetyl-CoA, cholesterol", "D) Fatty acids, ketone bodies, urea"],
+    correct: 1,
+    hint: "Used during starvation to maintain blood glucose...",
+    term: "Gluconeogenesis",
+    lecture: 4
+  },
+  {
+    q: "🩺 TYPE I diabetes (IDDM) is caused by destruction of which cells?",
+    q_ar: "السكري من النوع الأول (IDDM) يسببه تدمير أي خلايا؟",
+    options: ["A) Alpha (α) cells of pancreas", "B) Beta (β) cells of pancreas", "C) Liver hepatocytes", "D) Muscle cells"],
+    correct: 1,
+    hint: "Auto-immune destruction; occurs under age 20...",
+    term: "Type I diabetes",
+    lecture: 5
+  }
+];
+
+// ===================================================
+// GAME STATE
+// ===================================================
+let gameState = {
+  coins: 50,
+  currentIndex: 0,
+  questions: [],
+  answers: [],
+  correct: 0,
+  wrong: 0,
+  streak: 0,
+  maxStreak: 0,
+  eliminatedOptions: [],
+  translateUsed: false,
+  hintUsed: false,
+  socialClaimed: {},
+  extraPool: [...EXTRA_QUESTIONS],
+  usedExtras: [],
+  answered: false,
+  pendingAnswer: null
+};
+
+// ===================================================
+// PARTICLES
+// ===================================================
+function createParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#00f5ff','#7c3aed','#f59e0b','#10b981'];
+  for(let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random()*100 + '%';
+    p.style.width = p.style.height = (2 + Math.random()*4) + 'px';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration = (8 + Math.random()*15) + 's';
+    p.style.animationDelay = Math.random()*10 + 's';
+    container.appendChild(p);
+  }
+}
+createParticles();
+
+// ===================================================
+// AUDIO ENGINE
+// ===================================================
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTone(freq, type, duration, volume = 0.3) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+
+function playCorrectSound() {
+  playTone(523, 'sine', 0.1, 0.25);
+  setTimeout(() => playTone(659, 'sine', 0.1, 0.25), 100);
+  setTimeout(() => playTone(784, 'sine', 0.2, 0.3), 200);
+}
+
+function playWrongSound() {
+  playTone(200, 'square', 0.15, 0.2);
+  setTimeout(() => playTone(150, 'square', 0.15, 0.2), 150);
+}
+
+function playCoinSound() {
+  playTone(880, 'sine', 0.08, 0.2);
+  setTimeout(() => playTone(1100, 'sine', 0.08, 0.2), 80);
+}
+
+function playStreakSound() {
+  [523,659,784,1046].forEach((f,i) => setTimeout(() => playTone(f,'sine',0.15,0.3), i*100));
+}
+
+function playSelectSound() {
+  playTone(400, 'sine', 0.08, 0.15);
+}
+
+// ===================================================
+// TEXT-TO-SPEECH
+// ===================================================
+function speakText(text) {
+  try {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'en-US';
+    utt.rate = 0.85;
+    utt.pitch = 1;
+    const voices = window.speechSynthesis.getVoices();
+    const enVoice = voices.find(v => v.lang.includes('en') && !v.lang.includes('IN'));
+    if(enVoice) utt.voice = enVoice;
+    window.speechSynthesis.speak(utt);
+    playSelectSound();
+  } catch(e) {}
+}
+
+// ===================================================
+// TOAST
+// ===================================================
+let toastTimer = null;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+// ===================================================
+// FLOATING COIN
+// ===================================================
+function showFloatingCoin(x, y) {
+  const el = document.createElement('div');
+  el.className = 'floating-coin';
+  el.textContent = '🪙';
+  el.style.left = (x || window.innerWidth/2 - 20) + 'px';
+  el.style.top = (y || window.innerHeight/2) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+
+// ===================================================
+// COIN MANAGEMENT
+// ===================================================
+function updateCoins(amount, x, y) {
+  gameState.coins += amount;
+  if(gameState.coins < 0) gameState.coins = 0;
+  document.getElementById('coinCount').textContent = gameState.coins;
+  if(amount > 0) {
+    playCoinSound();
+    showFloatingCoin(x, y);
+  }
+}
+
+// ===================================================
+// SOCIAL COINS
+// ===================================================
+function claimSocialCoins(key, amount, el) {
+  if(gameState.socialClaimed[key]) return;
+  gameState.socialClaimed[key] = true;
+
+  setTimeout(() => {
+    updateCoins(amount);
+    showToast(`🎉 شكراً على المتابعة! +${amount} 🪙`, 'coin');
+    if(el) el.classList.add('done');
+  }, 1500);
+}
+
+// ===================================================
+// GAME SETUP
+// ===================================================
+function startGame() {
+  playSelectSound();
+  gameState.coins = 50;
+  gameState.currentIndex = 0;
+  gameState.questions = shuffleArray([...QUESTIONS]);
+  gameState.answers = [];
+  gameState.correct = 0;
+  gameState.wrong = 0;
+  gameState.streak = 0;
+  gameState.maxStreak = 0;
+  gameState.eliminatedOptions = [];
+  gameState.translateUsed = false;
+  gameState.hintUsed = false;
+  gameState.answered = false;
+  gameState.extraPool = shuffleArray([...EXTRA_QUESTIONS]);
+  gameState.usedExtras = [];
+
+  document.getElementById('coinCount').textContent = 50;
+  showScreen('game-screen');
+  loadQuestion();
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for(let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ===================================================
+// LOAD QUESTION
+// ===================================================
+function loadQuestion(extraQ = null) {
+  const q = extraQ || gameState.questions[gameState.currentIndex];
+  gameState.answered = false;
+  gameState.pendingAnswer = null;
+  gameState.eliminatedOptions = [];
+
+  // Update progress
+  const total = 50;
+  const current = gameState.currentIndex + 1;
+  document.getElementById('questionCounter').textContent = `${current} / ${total}`;
+  document.getElementById('qNumber').textContent = `Question #${current} ${extraQ ? '(Bonus)' : ''}`;
+  document.getElementById('progressBar').style.width = ((current/total)*100) + '%';
+
+  // Lecture badge
+  const lectureNames = {
+    1: '📖 Lecture 1: Intro to Biochemistry',
+    2: '🔬 Lecture 2: Cell Structure & Function',
+    3: '🍬 Lecture 3: Carbohydrate Chemistry',
+    4: '⚡ Lecture 4: CHO Metabolism',
+    5: '🩺 Lecture 5: Diabetes Mellitus'
+  };
+  document.getElementById('lectureBadge').textContent = lectureNames[q.lecture] || '📚 Lecture';
+
+  // Question text with speaker
+  const qCard = document.getElementById('questionCard');
+  qCard.className = 'question-card';
+
+  const term = q.term || '';
+  document.getElementById('questionText').innerHTML =
+    q.q + (term ? ` <span class="speaker-wrap"><span class="term-speaker" onclick="speakText('${term.replace(/'/g,"&apos;")}')">🔊</span><span class="speaker-tooltip">Speak: ${term}</span></span>` : '');
+
+  // Reset extra UI
+  document.getElementById('arabicTranslation').style.display = 'none';
+  document.getElementById('arabicTranslation').textContent = '';
+  document.getElementById('hintBox').style.display = 'none';
+
+  // Shuffle options
+  const optIndices = [0,1,2,3];
+  const shuffledOpts = shuffleArray(optIndices.map((i) => ({ idx: i, text: q.options[i], isCorrect: i === q.correct })));
+
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  q._shuffled = shuffledOpts;
+
+  shuffledOpts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.id = `opt_${i}`;
+    btn.setAttribute('data-original-idx', opt.idx);
+    btn.setAttribute('data-is-correct', opt.isCorrect);
+
+    const letters = ['A','B','C','D'];
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt.text.replace(/^[A-D]\) /, '')}`;
+    btn.onclick = () => selectAnswer(i, btn, q, extraQ);
+    grid.appendChild(btn);
+  });
+
+  // Streak display
+  document.getElementById('streakCount').textContent = gameState.streak;
+
+  // Update power button states
+  updatePowerButtons();
+}
+
+// ===================================================
+// SELECT ANSWER
+// ===================================================
+function selectAnswer(optIdx, btn, q, extraQ) {
+  if(gameState.answered) return;
+  gameState.answered = true;
+
+  playSelectSound();
+  btn.classList.add('selected-answer');
+
+  const isCorrect = btn.getAttribute('data-is-correct') === 'true';
+
+  if(isCorrect) {
+    gameState.correct++;
+    gameState.streak++;
+    if(gameState.streak > gameState.maxStreak) gameState.maxStreak = gameState.streak;
+
+    playCorrectSound();
+
+    if(gameState.streak >= 6 && gameState.streak % 6 === 0) {
+      setTimeout(() => showStreakBonus(), 500);
+    }
+  } else {
+    gameState.wrong++;
+    gameState.streak = 0;
+    playWrongSound();
+  }
+
+  document.getElementById('streakCount').textContent = gameState.streak;
+
+  if(extraQ) {
+    // Extra question: next after delay
+    setTimeout(() => {
+      gameState.currentIndex++;
+      if(gameState.currentIndex >= 50) {
+        endGame();
+      } else {
+        resetPowers();
+        loadQuestion();
+      }
+    }, 1200);
+  } else {
+    gameState.answers.push({ q: q, isCorrect });
+    setTimeout(() => {
+      gameState.currentIndex++;
+      if(gameState.currentIndex >= 50) {
+        endGame();
+      } else {
+        resetPowers();
+        loadQuestion();
+      }
+    }, 1200);
+  }
+}
+
+function resetPowers() {
+  gameState.translateUsed = false;
+  gameState.hintUsed = false;
+  gameState.eliminatedOptions = [];
+  document.getElementById('arabicTranslation').style.display = 'none';
+  document.getElementById('hintBox').style.display = 'none';
+  updatePowerButtons();
+}
+
+function updatePowerButtons() {
+  const btnElim = document.getElementById('btnEliminate');
+  const btnChange = document.getElementById('btnChange');
+  const btnTrans = document.getElementById('btnTranslate');
+  const btnHint = document.getElementById('btnHint');
+
+  btnElim.disabled = gameState.coins < 10 || gameState.answered;
+  btnChange.disabled = gameState.coins < 10 || gameState.answered;
+  btnTrans.disabled = gameState.coins < 5 || gameState.translateUsed || gameState.answered;
+  btnHint.disabled = gameState.coins < 5 || gameState.hintUsed || gameState.answered;
+}
+
+// ===================================================
+// POWER BUTTONS
+// ===================================================
+function useEliminate() {
+  if(gameState.coins < 10 || gameState.answered) return;
+  const q = gameState.questions[gameState.currentIndex];
+  if(!q) return;
+
+  const opts = document.querySelectorAll('.option-btn:not(.eliminated)');
+  let wrongOpts = Array.from(opts).filter(b => b.getAttribute('data-is-correct') === 'false');
+  if(wrongOpts.length === 0) return;
+
+  updateCoins(-10);
+  playSelectSound();
+  showToast('🗑️ تم حذف إجابة خاطئة! -10 🪙', 'error');
+
+  const toElim = wrongOpts[Math.floor(Math.random()*wrongOpts.length)];
+  toElim.classList.add('eliminated');
+  toElim.disabled = true;
+  updatePowerButtons();
+}
+
+function useChange() {
+  if(gameState.coins < 10 || gameState.answered) return;
+  if(gameState.extraPool.length === 0) {
+    showToast('⚠️ مفيش أسئلة إضافية متاحة!', '');
+    return;
+  }
+
+  updateCoins(-10);
+  playSelectSound();
+  showToast('🔄 تم تبديل السؤال! -10 🪙', '');
+
+  const extraQ = gameState.extraPool.pop();
+  gameState.usedExtras.push(extraQ);
+
+  resetPowers();
+  loadQuestion(extraQ);
+}
+
+function useTranslate() {
+  if(gameState.coins < 5 || gameState.translateUsed || gameState.answered) return;
+  const q = gameState.questions[gameState.currentIndex];
+  if(!q) return;
+
+  updateCoins(-5);
+  gameState.translateUsed = true;
+  playSelectSound();
+  showToast('🌐 تم الترجمة! -5 🪙', '');
+
+  const trans = document.getElementById('arabicTranslation');
+  trans.textContent = '🇪🇬 ' + q.q_ar;
+  trans.style.display = 'block';
+  updatePowerButtons();
+}
+
+function useHint() {
+  if(gameState.coins < 5 || gameState.hintUsed || gameState.answered) return;
+  const q = gameState.questions[gameState.currentIndex];
+  if(!q) return;
+
+  updateCoins(-5);
+  gameState.hintUsed = true;
+  playSelectSound();
+  showToast('💡 تلميح بسيط! -5 🪙', '');
+
+  document.getElementById('hintText').textContent = q.hint;
+  document.getElementById('hintBox').style.display = 'block';
+  updatePowerButtons();
+}
+
+// ===================================================
+// STREAK BONUS
+// ===================================================
+function showStreakBonus() {
+  playStreakSound();
+  updateCoins(5);
+  showToast('🔥 6 صح ورا بعض! بونص +5 🪙', 'streak');
+
+  const overlay = document.getElementById('bonusOverlay');
+  const card = document.getElementById('bonusCard');
+  overlay.style.display = 'flex';
+  setTimeout(() => card.classList.add('show'), 50);
+
+  createConfetti();
+
+  setTimeout(() => {
+    card.classList.remove('show');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 500);
+  }, 2500);
+}
+
+function createConfetti() {
+  const colors = ['#00f5ff','#7c3aed','#f59e0b','#10b981','#ef4444','#ffd700'];
+  for(let i = 0; i < 50; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.top = '-20px';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.width = c.style.height = (5 + Math.random()*10) + 'px';
+    c.style.animationDuration = (1.5 + Math.random()*1.5) + 's';
+    c.style.animationDelay = Math.random()*0.5 + 's';
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3000);
+  }
+}
+
+// ===================================================
+// END GAME
+// ===================================================
+function endGame() {
+  const score = gameState.correct;
+  const pct = (score/50)*100;
+
+  // Update score circle
+  const deg = (pct/100)*360;
+  document.getElementById('scoreCircle').style.setProperty('--score-deg', deg + 'deg');
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('correctCount').textContent = gameState.correct;
+  document.getElementById('wrongCount').textContent = gameState.wrong;
+  document.getElementById('finalCoins').textContent = gameState.coins;
+
+  // Grade
+  let emoji, title, msg;
+  if(pct >= 90) {
+    emoji = '🏆'; title = 'ممتاز! Legend!';
+    msg = `🌟 يا نجم! ${score}/50 إجابة صح! أنت بجد بايو كمستري ماستر! 🧬 استمر في التألق يا Mohamed Atef! 💪`;
+  } else if(pct >= 75) {
+    emoji = '🥇'; title = 'رائع جداً! Great!';
+    msg = `👏 أحسنت يا Mohamed! ${score}/50 إجابة صح! شغل ممتاز. قريب من القمة! 🚀`;
+  } else if(pct >= 60) {
+    emoji = '🥈'; title = 'كويس! Good Job!';
+    msg = `😊 كويس يا صديقي! ${score}/50 صح. في ناحيات تحتاج مراجعة بس الأساس كويس! 📚`;
+  } else if(pct >= 50) {
+    emoji = '🥉'; title = 'مقبول! Keep Going!';
+    msg = `💪 ${score}/50 صح. محتاج تراجع أكتر يا Mohamed! الباقي مش وحش خالص. 📖`;
+  } else {
+    emoji = '📚'; title = 'حاول تاني! Try Again!';
+    msg = `🤔 ${score}/50 صح. اللعبة اسمها 'يلا نلم البايو كمستري' - مراجعة أكتر ثم حاول تاني! 💡`;
+  }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('gradeMessage').innerHTML =
+    `${msg}<br><br>🔥 <strong>أعلى سلسلة صح:</strong> ${gameState.maxStreak} إجابة ورا بعض!`;
+
+  createConfetti();
+  showScreen('result-screen');
+  playStreakSound();
+}
+
+// ===================================================
+// RESTART
+// ===================================================
+function restartGame() {
+  playSelectSound();
+  gameState.socialClaimed = {};
+  showScreen('intro-screen');
+}
+
+// ===================================================
+// VOICES LOAD
+// ===================================================
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+
+// Init
+</script>
+</body>
+</html>
